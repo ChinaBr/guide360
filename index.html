@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide 360° — Ferramenta interna (Customer Revenue)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F6;--surface:#FFFFFF;--surface-2:#EEF2F2;--ink:#16283F;--muted:#5B6B72;
+  --hair:#D9E1E2;--hair-strong:#C3CFD0;--brand:#254369;--brand-ink:#16283F;--accent:#D9A441;
+  --brand-grey:#8C8E8F;--brand-grey-2:#9AAAB4;
+  --d1:#254369;--d2:#3E6390;--d3:#6B7B87;--d4:#A67C2E;--good:#2E9E52;--warn:#C2571B;
+  --shadow:0 1px 2px rgba(20,33,43,.05),0 8px 24px rgba(20,33,43,.06);--radius:14px;
+  --f-disp:"Montserrat",system-ui,-apple-system,sans-serif;--f-body:"Montserrat",system-ui,-apple-system,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1618;--surface:#152124;--surface-2:#1B2A2D;--ink:#E7EEEE;--muted:#9BAAAD;
+  --hair:#26383B;--hair-strong:#33484C;--brand:#5B85B8;--brand-ink:#9AAAB4;--accent:#E8B860;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}}
+:root[data-theme="dark"]{
+  --bg:#0D1618;--surface:#152124;--surface-2:#1B2A2D;--ink:#E7EEEE;--muted:#9BAAAD;
+  --hair:#26383B;--hair-strong:#33484C;--brand:#5B85B8;--brand-ink:#9AAAB4;--accent:#E8B860;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-disp);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:0}
+p{margin:0 0 .7em}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:500}
+.internal-banner{background:#3A2A0F;color:#F0D9A8;text-align:center;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;padding:7px 10px}
+@media (prefers-color-scheme:dark){.internal-banner{background:#4A3714}}
+header.top{padding:20px 0;border-bottom:1px solid var(--hair);background:linear-gradient(160deg,var(--surface),var(--surface-2))}
+.top-inner{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.brand-line{display:flex;align-items:center;gap:9px}
+.brand-mark{width:20px;height:26px;flex:none;display:flex;align-items:center}
+.brand-word{font-family:var(--f-disp);font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-.01em;line-height:1.1}
+.brand-word .deg{color:var(--brand-grey);font-weight:600}
+.brand-byline{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.brand-name{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ver-tag{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);border:1px solid var(--hair-strong);border-radius:999px;padding:3px 10px}
+.id-fields{display:flex;gap:10px;flex-wrap:wrap}
+.id-fields input{padding:7px 10px;border:1px solid var(--hair-strong);border-radius:8px;background:var(--surface);color:var(--ink);font-family:var(--f-body);font-size:13px;width:200px}
+nav.tabs{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
+.tabs-inner{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{appearance:none;border:none;background:none;cursor:pointer;font-family:var(--f-body);font-weight:600;font-size:13.5px;color:var(--muted);padding:14px 16px;border-bottom:2.5px solid transparent;white-space:nowrap}
+.tab-btn[aria-selected=true]{color:var(--brand-ink);border-bottom-color:var(--brand)}
+main{padding:30px 0 90px}
+.panel{display:none}
+.panel[data-active=true]{display:block}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;margin-bottom:20px}
+.q-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.q-filter{appearance:none;cursor:pointer;font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--hair-strong);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 13px}
+.q-filter[aria-pressed=true]{color:#fff}
+.progress-label{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.qcard{border:1px solid var(--hair);border-left:4px solid var(--dc,var(--brand));border-radius:10px;padding:16px 18px;margin-bottom:14px;background:var(--surface)}
+.qcard-head{display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-wrap:wrap}
+.q-chip{font-family:var(--f-mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--dc,var(--brand))}
+.q-num{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.q-peso-badge{margin-left:auto;font-family:var(--f-mono);font-size:10px;color:var(--muted);border:1px solid var(--hair-strong);border-radius:999px;padding:1px 8px}
+.qcard h3{font-size:15px;margin:2px 0 12px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border:1.3px solid var(--hair-strong);border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:13.5px}
+.opt:hover{border-color:var(--dc,var(--brand))}
+.opt input{margin-top:3px;accent-color:var(--dc,var(--brand));flex:none}
+.opt.selected{border-color:var(--dc,var(--brand));background:color-mix(in srgb,var(--dc,var(--brand)) 8%,var(--surface))}
+.q-internal{margin-top:10px;padding-top:10px;border-top:1px dashed var(--hair-strong);font-size:12px;color:var(--muted)}
+.q-internal b{color:var(--ink)}
+.dash-top{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.dash-top{grid-template-columns:1fr}}
+.result-score{text-align:center;padding:6px 0}
+.result-score .big{font-family:var(--f-disp);font-size:52px;font-weight:600;color:var(--brand)}
+.result-score .big span{font-size:20px;color:var(--muted);font-weight:400}
+.faixa-badge{display:inline-block;padding:6px 16px;border-radius:999px;color:#fff;font-weight:600;font-size:13px;margin:8px 0 4px}
+.legend{display:flex;justify-content:center;gap:14px;font-size:11.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.legend label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.legend i{width:13px;height:3px;display:inline-block;border-radius:2px}
+table.pt{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+table.pt th,table.pt td{padding:8px 9px;border-bottom:1px solid var(--hair);text-align:center}
+table.pt th{font-family:var(--f-mono);font-size:10.5px;text-transform:uppercase;color:var(--muted);text-align:center}
+table.pt td:first-child,table.pt th:first-child{text-align:left}
+.mt-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.meta-cell{width:52px;padding:4px 5px;border:1px solid var(--hair-strong);border-radius:6px;text-align:center;font-family:var(--f-mono);background:var(--surface);color:var(--ink)}
+.gap-pos{color:var(--good)}.gap-neg{color:var(--warn)}
+.evo-item{border:1px solid var(--hair);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.evo-item .eh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.evo-item .eh b{font-size:14.5px}
+.evo-bar-shell{height:8px;background:var(--hair);border-radius:99px;overflow:hidden;position:relative;margin:6px 0}
+.evo-bar{height:100%;border-radius:99px}
+.evo-meta-mark{position:absolute;top:-2px;width:2px;height:12px;background:var(--ink)}
+.sol-dim{margin-bottom:22px}
+.sol-dim-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sol-dim-head .sdscore{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.gap-list{margin:8px 0 12px;padding:0;list-style:none}
+.gap-list li{font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--hair);color:var(--ink)}
+.gap-list li .gl-num{font-family:var(--f-mono);color:var(--muted);margin-right:6px}
+.gap-list li .gl-ans{color:var(--muted)}
+.sol-item{border:1px solid var(--hair);border-radius:9px;padding:12px 14px;margin-bottom:8px;background:var(--surface-2)}
+.sol-item p{margin:0 0 8px;font-size:13px}
+.sol-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mod-chip{font-family:var(--f-mono);font-size:10.5px;background:var(--surface);border:1px solid var(--hair-strong);border-radius:999px;padding:2px 9px;color:var(--brand-ink)}
+.empty-note{color:var(--muted);font-size:13.5px;text-align:center;padding:30px 10px}
+.subhead{font-size:13px;color:var(--muted);margin-bottom:14px}
+.q-comment{width:100%;margin-top:8px;padding:9px 11px;border:1px dashed var(--hair-strong);border-radius:8px;background:var(--surface-2);color:var(--ink);font-family:var(--f-body);font-size:12.5px;resize:vertical;min-height:36px;box-sizing:border-box}
+.q-comment:focus{outline:1.5px solid var(--dc,var(--brand));border-style:solid}
+.q-comment::placeholder{color:var(--muted)}
+.q-gancho{margin-top:10px;padding:9px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 10%,var(--surface));border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--hair-strong));font-size:12px;color:var(--ink)}
+.q-gancho b{color:var(--accent)}
+.sol-benefit{font-size:12px;color:var(--good);margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--hair)}
+.sol-benefit b{color:inherit}
+tr.dim-row{cursor:pointer}
+tr.dim-row:hover{background:var(--surface-2)}
+tr.dim-row .expand-toggle{font-family:var(--f-mono);color:var(--muted);width:16px}
+tr.calc-row{display:none}
+tr.calc-row.show{display:table-row}
+tr.calc-row td{padding:12px 10px;background:var(--surface-2)}
+table.calc-table{width:100%;border-collapse:collapse;font-size:11.5px}
+table.calc-table th,table.calc-table td{padding:5px 7px;border-bottom:1px solid var(--hair);text-align:center}
+table.calc-table th{font-family:var(--f-mono);font-size:10px;text-transform:uppercase;color:var(--muted)}
+table.calc-table td:nth-child(2){text-align:left}
+table.calc-table tfoot td{font-weight:600;border-top:1.5px solid var(--hair-strong);border-bottom:none}
+.btn-export{appearance:none;cursor:pointer;font-family:var(--f-body);font-weight:600;font-size:13px;border-radius:8px;padding:9px 16px;border:1px solid var(--hair-strong);background:transparent;color:var(--muted)}
+.btn-export:hover{color:var(--brand-ink);border-color:var(--brand)}
+.block{margin-bottom:52px}
+.block-head{margin-bottom:22px}
+.block-head h2{font-size:clamp(22px,2.6vw,30px);margin-bottom:6px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.g2,.g4{grid-template-columns:1fr}}
+.dimcard{background:var(--surface);border:1px solid var(--hair);border-top:3px solid var(--dc);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.dimcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.dimtag{font-family:var(--f-mono);font-size:11px;color:#fff;background:var(--dc);border-radius:5px;padding:2px 7px;letter-spacing:.05em}
+.dimpeso{font-family:var(--f-disp);font-size:24px;font-weight:600;color:var(--dc)}
+.ladder{display:flex;flex-direction:column;gap:10px}
+.rung{display:flex;background:var(--surface);border:1px solid var(--hair);border-left:5px solid var(--fc);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.rung-range{flex:none;width:92px;display:grid;place-items:center;font-family:var(--f-disp);font-size:20px;font-weight:600;color:var(--fc);background:color-mix(in srgb,var(--fc) 10%,var(--surface));border-right:1px solid var(--hair)}
+.rung-body{padding:14px 18px}
+.rung-name{font-family:var(--f-disp);font-size:17px;font-weight:600}
+.rung-mkt{font-size:12px;color:var(--muted);font-style:italic;border-top:1px dashed var(--hair);padding-top:7px}
+.mkt-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:760px){.mkt-stats{grid-template-columns:1fr}}
+.stat{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.stat .n{font-family:var(--f-disp);font-size:28px;font-weight:600;color:var(--brand)}
+.stat .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+.callout{background:color-mix(in srgb,var(--accent) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 40%,var(--hair));border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px}
+.callout h4{font-size:13.5px;margin-bottom:6px}
+.note{font-size:12px;color:var(--muted);font-style:italic;margin-top:14px}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.flow-step{flex:1 1 150px;background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:15px;box-shadow:var(--shadow)}
+.flow-step h4{font-size:13.5px;margin:4px 0}
+.flow-step p{font-size:12px;color:var(--muted);margin:0}
+.s-n{font-family:var(--f-mono);font-size:11px;color:var(--brand);letter-spacing:.1em}
+.flow-arrow{align-self:center;color:var(--hair-strong);font-size:20px}
+.wbar-row{display:grid;grid-template-columns:180px 1fr 48px;align-items:center;gap:14px;margin-bottom:12px}
+.wbar-label{font-size:14px;font-weight:500}
+.wbar-track{background:var(--surface-2);border-radius:999px;height:16px;overflow:hidden}
+.wbar-fill{height:100%;border-radius:999px}
+.wbar-val{font-family:var(--f-mono);font-size:14px;text-align:right;font-weight:500}
+.alicerce{display:flex;gap:16px;align-items:flex-start;background:color-mix(in srgb,var(--d1) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--d1) 30%,var(--hair));border-left:5px solid var(--d1);border-radius:14px;padding:20px}
+.alicerce h4{font-size:14.5px;margin-bottom:6px}
+.g-ic{flex:none;width:42px;height:42px;border-radius:10px;background:var(--d1);color:#fff;display:grid;place-items:center;font-size:20px}
+.fscale{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--hair)}
+.fscale-seg{position:relative;padding:14px 10px 24px;color:#fff;background:var(--fc);min-width:0}
+.fscale-name{font-size:13px;font-weight:600;display:block;line-height:1.1}
+.fscale-num{position:absolute;bottom:6px;left:10px;font-family:var(--f-mono);font-size:11px;opacity:.85}
+.qwgroup{background:var(--surface);border:1px solid var(--hair);border-left:4px solid var(--dc);border-radius:10px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+.qwgroup summary{cursor:pointer;padding:13px 16px;font-weight:600;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:9px}
+.qwgroup summary::-webkit-details-marker{display:none}
+.qwg-dot{width:9px;height:9px;border-radius:50%;background:var(--dc)}
+.qwg-meta{font-family:var(--f-mono);font-size:11px;color:var(--muted);font-weight:400;margin-left:auto}
+.qwtable{width:100%;border-collapse:collapse;font-size:13px}
+.qwtable th,.qwtable td{padding:8px 16px;border-top:1px solid var(--hair);text-align:left}
+.qw-num{font-family:var(--f-mono);font-size:12px;color:var(--brand-ink);white-space:nowrap}
+.qw-peso{font-family:var(--f-mono);text-align:center;font-weight:600}
+.lead{color:var(--muted);max-width:72ch}
+.tnum{font-family:var(--f-mono);font-size:11px;opacity:.6}
+</style>
+</head>
+<body>
+<div class="internal-banner">USO INTERNO ATLAS — NÃO ENVIAR AO CLIENTE</div>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand-line"><span class="brand-mark"><svg viewBox="0 0 100 130" width="100%" height="100%">
+      <circle cx="50" cy="42" r="32" fill="none" stroke="#254369" stroke-width="6"/>
+      <g transform="rotate(-15 50 42)">
+        <polygon points="50,22 57,42 43,42" fill="#254369"/>
+        <polygon points="50,62 57,42 43,42" fill="#8C8E8F"/>
+      </g>
+      <rect x="42" y="72" width="16" height="8" fill="#254369"/>
+      <rect x="32" y="80" width="36" height="9" rx="4.5" fill="#8C8E8F"/>
+      <rect x="33" y="92" width="34" height="9" rx="4.5" fill="#8C8E8F"/>
+      <path d="M 38 104 Q 50 115 62 104 Z" fill="#8C8E8F"/>
+    </svg></span><div><div class="brand-word">Guide <span class="deg">360°</span></div><div class="brand-byline">by Atlas Inovações</div></div><span class="brand-name" style="margin-left:6px">· Customer Revenue</span><span class="ver-tag">Guide360 v1.0 · interno</span></div>
+    <div class="id-fields">
+      <input type="text" id="inpEmpresa" placeholder="Nome da empresa (cliente)">
+      <input type="text" id="inpResp" placeholder="Entrevistador / responsável">
+    </div>
+  </div>
+</header>
+<nav class="tabs"><div class="tabs-inner">
+  <button class="tab-btn" data-tab="visao" aria-selected="false">Visão do índice</button>
+  <button class="tab-btn" data-tab="modelo" aria-selected="false">Modelo &amp; pesos</button>
+  <button class="tab-btn" data-tab="quiz" aria-selected="true">Questionário</button>
+  <button class="tab-btn" data-tab="dash" aria-selected="false">Resultado &amp; radar</button>
+  <button class="tab-btn" data-tab="evo" aria-selected="false">Plano de evolução</button>
+  <button class="tab-btn" data-tab="sol" aria-selected="false">Soluções &amp; plano de ação</button>
+</div></nav>
+
+<main><div class="wrap">
+
+  <section class="panel" data-tab="visao">
+  <section class="block"><div class="block-head"><h2>O que é o índice</h2></div>
+    <div class="grid g2">
+      <div class="card" style="padding:22px">
+        <p>O <b>Guide 360°</b>, produto proprietário da Atlas Inovações, traduz em um único número de 0 a 100 o quanto uma empresa domina o ciclo completo de gestão dos seus prestadores — do compliance documental de base ao uso estratégico da informação pela alta liderança.</p>
+        <p>Ele nasce de um questionário de <b>redação indireta</b>: o cliente descreve como opera hoje, sem jargão de produto, e o modelo converte cada resposta em pontos. O resultado mostra <b>onde ele está forte, onde está frágil</b> e o quanto o separa do mercado e da excelência.</p>
+        <p style="margin-bottom:0">Cada gap se conecta a <b>boas práticas e a módulos da Atlas</b> — transformando o diagnóstico em um plano de evolução (e um mapa de expansão de uso interno do CS).</p></div>
+      <div class="card" style="padding:22px">
+        <p class="eyebrow" style="margin-bottom:12px">Para que serve</p>
+        <p>→ <b>Diagnosticar</b> a maturidade do cliente de forma objetiva e comparável.</p>
+        <p>→ <b>Posicionar</b> vs. mercado, excelência e world class.</p>
+        <p>→ <b>Priorizar</b> onde há maior risco e maior ganho.</p>
+        <p>→ <b>Acordar</b> uma meta por dimensão para o período.</p>
+        <p style="margin-bottom:0">→ <b>Conectar</b> cada gap a uma prática e a um módulo que o resolve.</p></div>
+    </div></section>
+  <section class="block"><div class="block-head"><h2>De onde vem o nome e o método</h2>
+    <p class="lead">A assinatura Guide 360° não é decorativa — cada parte carrega um significado, e a metodologia por trás dela vem de referências técnicas reconhecidas, não de uma escala inventada internamente.</p></div>
+    <div class="grid g2">
+      <div class="card" style="padding:22px">
+        <p class="eyebrow" style="margin-bottom:12px">A logo</p>
+        <p><b>Guide</b> — a agulha dentro do anel representa orientação: o produto não entrega só uma nota, entrega uma direção clara de para onde evoluir.</p>
+        <p><b>360°</b> — o anel fechado fala de visão completa: a leitura enxerga a operação do fornecedor por inteiro, não um recorte isolado de risco.</p>
+        <p style="margin-bottom:0">A base de 2 barras + pontinha reproduz, na mesma proporção, a base do logotipo oficial da Atlas — ancorando o produto na identidade visual da casa mesmo sem escrever "Atlas" por extenso no nome.</p></div>
+      <div class="card" style="padding:22px">
+        <p class="eyebrow" style="margin-bottom:12px">A metodologia</p>
+        <p>A escada de 5 faixas segue a mesma lógica usada há quase 40 anos em modelos de maturidade organizacional — origem no <b>CMMI</b> (Software Engineering Institute, Carnegie Mellon, a partir de 1987) — e dialoga com a convenção mais comum entre frameworks de <b>TPRM</b> (Third-Party Risk Management) usados no mercado internacional, adaptada à realidade da terceirização no Brasil.</p>
+        <p style="margin-bottom:0">O valor não está só no questionário: está na jornada completa — <b>Diagnosticar → Posicionar → Interpretar → Priorizar → Acordar evolução → Provar valor → Reavaliar</b>.</p></div>
+    </div></section>
+  <section class="block"><div class="block-head"><h2>O que ele mede — 4 dimensões</h2>
+    <p class="lead">As dimensões seguem uma jornada de maturidade: primeiro o alicerce, depois a automação, então a inteligência de dados e, no topo, a governança que usa tudo isso para decidir.</p></div>
+    <div class="grid g4">
+  <article class="dimcard" style="--dc:#254369">
+    <div class="dimcard-top"><span class="dimtag">D1</span><span class="dimpeso">25%</span></div>
+    <h3>Fundamentos</h3><p>O básico do controle: documentação trabalhista, segurança do trabalho, equipamentos e a estrutura da matriz documental. É o alicerce da gestão.</p></article>
+  <article class="dimcard" style="--dc:#3E6390">
+    <div class="dimcard-top"><span class="dimtag">D2</span><span class="dimpeso">20%</span></div>
+    <h3>Capacidades intermediárias</h3><p>Automação e controle operacional: validação automática de documentos, antifraude/IA, crachá digital, inspeção em campo, treinamentos, homologação e alojamento.</p></article>
+  <article class="dimcard" style="--dc:#6B7B87">
+    <div class="dimcard-top"><span class="dimtag">D3</span><span class="dimpeso">30%</span></div>
+    <h3>Integração e dados</h3><p>A inteligência que separa quem controla de quem decide: cruzamento entre Gestão de Terceiros, Compras, Contratos e Performance para gerar insight e saving.</p></article>
+  <article class="dimcard" style="--dc:#A67C2E">
+    <div class="dimcard-top"><span class="dimtag">D4</span><span class="dimpeso">25%</span></div>
+    <h3>Governança</h3><p>Como o tema é conduzido: identificação de contratos, papéis e responsabilidades, jornada e portal do fornecedor, política de consequências, reporte executivo e uso estratégico da informação.</p></article></div></section>
+  <section class="block"><div class="block-head"><h2>A escada de maturidade</h2>
+    <p class="lead">Cinco faixas, da operação reativa à gestão preditiva e estratégica. A escala dialoga com os modelos de maturidade de TPRM do mercado (Inicial → Em desenvolvimento → Definido → Gerido por dados → Otimizado), adaptada à realidade da terceirização no Brasil.</p></div>
+    <div class="ladder">
+  <div class="rung" style="--fc:#B4442F">
+    <div class="rung-range">0–24</div>
+    <div class="rung-body"><div class="rung-name">Inicial <span>· Ad hoc / reativo</span></div>
+    <p>Controle reativo e fragmentado. A gestão de terceiros acontece &#x27;quando dá&#x27; ou quando há um problema. Alto risco trabalhista e de compliance.</p><div class="rung-mkt">Estágio onde está a maior parte do mercado brasileiro.</div></div></div>
+  <div class="rung" style="--fc:#D97A2B">
+    <div class="rung-range">25–44</div>
+    <div class="rung-body"><div class="rung-name">Em estruturação <span>· Conformidade / documental</span></div>
+    <p>Processos básicos formalizados, quase sempre por exigência legal/auditoria. Controle documental existe, mas depende de esforço manual e planilhas.</p><div class="rung-mkt">Onde chega a parcela que já sofreu passivo trabalhista ou autuação.</div></div></div>
+  <div class="rung" style="--fc:#E6B33E">
+    <div class="rung-range">45–64</div>
+    <div class="rung-body"><div class="rung-name">Gerenciado <span>· Padronizado e digital</span></div>
+    <p>Processo padronizado e digital em toda a base de terceiros, com matriz documental por função/atividade e automação de validação. Governança começa a existir.</p><div class="rung-mkt">Poucas empresas chegam aqui de forma consistente.</div></div></div>
+  <div class="rung" style="--fc:#3E9E77">
+    <div class="rung-range">65–84</div>
+    <div class="rung-body"><div class="rung-name">Excelência <span>· Gerido por dados</span></div>
+    <p>Gestão orientada por indicadores e monitoramento contínuo. Dados de terceiros cruzam com Compras, Contratos e Performance para gerar decisão.</p><div class="rung-mkt">Referência de mercado — meta realista para clientes estratégicos.</div></div></div>
+  <div class="rung" style="--fc:#14807A">
+    <div class="rung-range">85–100</div>
+    <div class="rung-body"><div class="rung-name">World Class <span>· Preditivo / Estratégico</span></div>
+    <p>Gestão de terceiros é tema estratégico de C-level. Automação, IA e inteligência integrada antecipam risco e orientam decisões de negócio ponta a ponta.</p><div class="rung-mkt">Casos raros e emblemáticos (ex.: grandes cases de indústria).</div></div></div></div></section>
+  <section class="block"><div class="block-head"><h2>Onde o mercado está</h2>
+    <p class="lead">A gestão de terceiros ainda é pouco madura — no Brasil e no mundo. Estudos de TPRM mostram que a maior parte das organizações permanece nos estágios iniciais e trava na passagem do compliance para o processo padronizado.</p></div>
+    <div class="mkt-stats">
+      <div class="stat"><div class="n">~40%</div><div class="l">da base de fornecedores é gerida dentro de programas maduros — a maioria fica fora.</div></div>
+      <div class="stat"><div class="n">L2→L3</div><div class="l">é onde os programas mais empacam: sair do compliance reativo para o processo padronizado.</div></div>
+      <div class="stat"><div class="n">32</div><div class="l">média de mercado estimada no Guide 360° (faixa Inicial/Em estruturação) — ponto de partida da maioria.</div></div>
+    </div>
+    <div style="margin-top:18px" class="callout"><h4>Leitura para a Atlas</h4>
+      <p>Mercado pouco maduro = espaço enorme para evoluir clientes. O Guide 360° dá a linguagem para mostrar o gap e construir a jornada. Excelência ≈ <b>78</b> e world class ≈ <b>92</b> fixam os tetos aspiracionais.</p></div>
+    <p class="note">Referências de mercado (frameworks TPRM em estágios de maturidade, predominantemente 5 níveis): Atlas Systems, CheckFirst, LearnTPRM. A SureCloud publica um modelo mais granular, de 7 estágios, citada aqui como referência de maior detalhamento. Os valores de mercado/excelência/world class do Guide 360° são <b>estimativas de trabalho da Atlas</b>, a validar com benchmarking formal — não são dados públicos de terceiros.</p></section>
+</section>
+
+<section class="panel" data-tab="modelo">
+  <section class="block"><div class="block-head"><h2>Como o score é calculado</h2>
+    <p class="lead">Cada resposta vira uma fração de maturidade (0% a 100%). As perguntas se somam por peso dentro da dimensão; as dimensões se somam por peso no índice geral.</p></div>
+    <div class="flow">
+      <div class="flow-step"><div class="s-n">01</div><h4>Resposta</h4><p>O cliente escolhe a opção que descreve sua realidade.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="s-n">02</div><h4>Fração × peso</h4><p>Cada opção vale de 0% a 100%, multiplicada pelo peso da pergunta.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="s-n">03</div><h4>Score da dimensão</h4><p>Média ponderada das perguntas → 0 a 100 por dimensão.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="s-n">04</div><h4>Índice geral</h4><p>Dimensões ponderadas por peso → score final 0–100.</p></div><div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="s-n">05</div><h4>Faixa</h4><p>O score final cai em uma das 5 faixas de maturidade.</p></div>
+    </div></section>
+  <section class="block"><div class="block-head"><h2>Peso de cada dimensão no índice</h2>
+    <p class="lead">Integração e dados pesa mais: é o que separa quem apenas controla de quem decide com informação.</p></div>
+    <div class="card" style="padding:24px">
+  <div class="wbar-row"><div class="wbar-label">Fundamentos</div>
+  <div class="wbar-track"><div class="wbar-fill" style="width:83.33333333333334%;background:#254369"></div></div>
+  <div class="wbar-val">25%</div></div>
+  <div class="wbar-row"><div class="wbar-label">Capacidades intermediárias</div>
+  <div class="wbar-track"><div class="wbar-fill" style="width:66.66666666666666%;background:#3E6390"></div></div>
+  <div class="wbar-val">20%</div></div>
+  <div class="wbar-row"><div class="wbar-label">Integração e dados</div>
+  <div class="wbar-track"><div class="wbar-fill" style="width:100.0%;background:#6B7B87"></div></div>
+  <div class="wbar-val">30%</div></div>
+  <div class="wbar-row"><div class="wbar-label">Governança</div>
+  <div class="wbar-track"><div class="wbar-fill" style="width:83.33333333333334%;background:#A67C2E"></div></div>
+  <div class="wbar-val">25%</div></div></div></section>
+  <section class="block"><div class="block-head"><h2>Os fundamentos são o alicerce</h2></div>
+    <div class="alicerce"><div class="g-ic">▲</div>
+      <div><h4>Sem base, o resto não se sustenta</h4>
+      <p>Controle trabalhista, de segurança do trabalho e de equipamentos são a fundação da gestão de terceiros — é onde mora o risco de responsabilidade subsidiária (Súmula 331 TST). Nesta versão eles <b>não travam</b> o índice: o score é a média ponderada pura das 4 dimensões. Mas continuam sendo o primeiro lugar a olhar num diagnóstico: um cliente forte em dados e fraco em fundamentos é um alerta, não um avanço.</p></div></div></section>
+  <section class="block"><div class="block-head"><h2>Faixas na escala 0–100</h2></div>
+    <div class="fscale"><div class="fscale-seg" style="--fc:#B4442F;flex:25"><span class="fscale-name">Inicial</span><span class="fscale-num">0</span></div><div class="fscale-seg" style="--fc:#D97A2B;flex:20"><span class="fscale-name">Em estruturação</span><span class="fscale-num">25</span></div><div class="fscale-seg" style="--fc:#E6B33E;flex:20"><span class="fscale-name">Gerenciado</span><span class="fscale-num">45</span></div><div class="fscale-seg" style="--fc:#3E9E77;flex:20"><span class="fscale-name">Excelência</span><span class="fscale-num">65</span></div><div class="fscale-seg" style="--fc:#14807A;flex:16"><span class="fscale-name">World Class</span><span class="fscale-num">85</span></div></div></section>
+  <section class="block"><div class="block-head"><h2>Peso das perguntas por dimensão</h2>
+    <p class="lead">Abra cada dimensão para ver o peso relativo de cada pergunta. Pesos e cortes são provisórios e ajustáveis com a liderança.</p></div>
+    <div id="qwGroups"></div></section>
+</section>
+
+
+
+
+  <section class="panel" data-tab="quiz" data-active="true">
+    <div class="card">
+      <div class="eyebrow">Entrevista</div>
+      <h2 style="font-size:20px;margin-bottom:6px">Questionário — 27 perguntas, 4 dimensões</h2>
+      <p class="subhead">Selecione a resposta que melhor descreve a situação do cliente hoje. O vínculo com os módulos Atlas (uso interno) aparece abaixo de cada pergunta — nunca mostrar ao cliente.</p>
+      <div class="q-filters" id="qFilters">
+        <button class="q-filter" data-dim="all" aria-pressed="true">Todas</button>
+      </div>
+      <div class="progress-label" id="qProgress" style="margin-bottom:14px">0 / 27 respondidas</div>
+      <div id="qList"></div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="dash">
+    <div class="card">
+      <div class="eyebrow">Diagnóstico consolidado</div>
+      <h2 style="font-size:20px;margin-bottom:14px">Score, faixa e radar de maturidade</h2>
+      <div class="dash-top">
+        <div>
+          <div class="result-score">
+            <div class="big" id="scoreBig">0<span>/100</span></div>
+            <div class="faixa-badge" id="faixaBadge">—</div>
+            <p style="text-align:center;color:var(--muted);font-size:13px;max-width:40ch;margin:6px auto 0" id="faixaDesc"></p>
+          </div>
+          <h3 style="font-size:15px;margin-top:24px;margin-bottom:3px">Plano de evolução por dimensão</h3>
+          <p class="subhead" style="margin-bottom:8px">Cliente hoje × referências × meta acordada. Edite a coluna Meta na reunião; o gap mostra quanto falta para chegar lá.</p>
+          <p style="font-size:11px;color:var(--muted);margin:0 0 8px">Clique numa linha para ver a memória de cálculo da dimensão.</p>
+          <table class="pt" id="planTbl">
+            <thead><tr><th></th><th>Dimensão</th><th>Cliente</th><th>Mercado</th><th>Excel.</th><th>WC</th><th>Meta</th><th>Gap→Meta</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div>
+          <svg id="radar" width="500" height="380" viewBox="0 0 500 380" style="max-width:100%;height:auto"></svg>
+          <div class="legend">
+            <label><input type="checkbox" id="showMkt" checked> <i style="border-bottom:2px dashed #9AA7B0"></i> Mercado</label>
+            <label><input type="checkbox" id="showExc" checked> <i style="border-bottom:2px dashed #3E9E77"></i> Excelência</label>
+            <label><input type="checkbox" id="showWc"> <i style="border-bottom:2px dashed #8892A0"></i> World Class</label>
+            <label><i style="background:var(--accent)"></i> Meta acordada</label>
+            <label><i style="background:var(--brand)"></i> Cliente</label>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11.5px;color:var(--muted);margin-top:16px" id="benchNote"></p>
+      <button class="btn-export" style="margin-top:6px" onclick="exportCsv()">Baixar respostas desta entrevista (.csv)</button>
+      <h3 style="font-size:15px;margin-top:28px;margin-bottom:10px">Pontuação de cada classificação</h3>
+      <table class="pt" id="faixaTbl">
+        <thead><tr><th>Faixa</th><th>Pontos</th><th>Estágio</th><th>O que caracteriza</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="evo">
+    <div class="card">
+      <div class="eyebrow">Plano de evolução</div>
+      <h2 style="font-size:20px;margin-bottom:6px">Meta por dimensão (editável)</h2>
+      <p class="subhead">Ajuste a meta acordada com o cliente em cada dimensão. A marca preta na barra indica a meta; o preenchimento colorido mostra a posição atual do cliente.</p>
+      <div id="evoList"></div>
+    </div>
+  </section>
+
+  <section class="panel" data-tab="sol">
+    <div class="card">
+      <div class="eyebrow">Baseado nas respostas do cliente</div>
+      <h2 style="font-size:20px;margin-bottom:6px">Soluções &amp; plano de ação</h2>
+      <p class="subhead">Dimensões ordenadas da maior para a menor oportunidade. Para cada uma, os principais gaps identificados nas respostas do cliente e as boas práticas + módulos Atlas recomendados.</p>
+      <div id="solList"></div>
+    </div>
+  </section>
+
+</div></main>
+
+<script>
+const MODEL = {"faixas":[{"id":1,"nome":"Inicial","sub":"Ad hoc / reativo","min":0,"max":24,"cor":"#B4442F","desc":"Controle reativo e fragmentado. A gestão de terceiros acontece 'quando dá' ou quando há um problema. Alto risco trabalhista e de compliance.","mkt":"Estágio onde está a maior parte do mercado brasileiro."},{"id":2,"nome":"Em estruturação","sub":"Conformidade / documental","min":25,"max":44,"cor":"#D97A2B","desc":"Processos básicos formalizados, quase sempre por exigência legal/auditoria. Controle documental existe, mas depende de esforço manual e planilhas.","mkt":"Onde chega a parcela que já sofreu passivo trabalhista ou autuação."},{"id":3,"nome":"Gerenciado","sub":"Padronizado e digital","min":45,"max":64,"cor":"#E6B33E","desc":"Processo padronizado e digital em toda a base de terceiros, com matriz documental por função/atividade e automação de validação. Governança começa a existir.","mkt":"Poucas empresas chegam aqui de forma consistente."},{"id":4,"nome":"Excelência","sub":"Gerido por dados","min":65,"max":84,"cor":"#3E9E77","desc":"Gestão orientada por indicadores e monitoramento contínuo. Dados de terceiros cruzam com Compras, Contratos e Performance para gerar decisão.","mkt":"Referência de mercado — meta realista para clientes estratégicos."},{"id":5,"nome":"World Class","sub":"Preditivo / Estratégico","min":85,"max":100,"cor":"#14807A","desc":"Gestão de terceiros é tema estratégico de C-level. Automação, IA e inteligência integrada antecipam risco e orientam decisões de negócio ponta a ponta.","mkt":"Casos raros e emblemáticos (ex.: grandes cases de indústria)."}],"dimensoes":[{"id":"D1","nome":"Fundamentos","peso":25,"cor":"#254369","resumo":"O básico do controle: documentação trabalhista, segurança do trabalho, equipamentos e a estrutura da matriz documental. É o alicerce da gestão.","mkt":50,"excel":82,"wc":95},{"id":"D2","nome":"Capacidades intermediárias","peso":20,"cor":"#3E6390","resumo":"Automação e controle operacional: validação automática de documentos, antifraude/IA, crachá digital, inspeção em campo, treinamentos e homologação.","mkt":28,"excel":78,"wc":92},{"id":"D3","nome":"Integração e dados","peso":30,"cor":"#6B7B87","resumo":"A inteligência que separa quem controla de quem decide: cruzamento entre Gestão de Terceiros, Compras, Contratos e Performance para gerar insight e saving.","mkt":20,"excel":75,"wc":92},{"id":"D4","nome":"Governança","peso":25,"cor":"#A67C2E","resumo":"Como o tema é conduzido: identificação de contratos, papéis e responsabilidades, jornada e comunicação com o fornecedor (portal), política de consequências, reporte executivo e uso estratégico da informação.","mkt":30,"excel":78,"wc":92}],"bench":{"mercado_geral":32,"excelencia_geral":78,"world_class_geral":92,"nota":"Valores de referência de mercado, excelência e world class são estimativas de trabalho da Atlas (baseadas na experiência de campo e nos cases mapeados), a validar com benchmarking formal. Não são dados públicos de terceiros."},"solucoes":{"D1":[{"pratica":"Padronizar a matriz documental por tipo de contratação, função e atividade crítica — em vez de um checklist único para todos os terceiros.","modulos":["Matriz Documental Inteligente","Compliance Trabalhista","Módulo de SSMA"],"beneficio":"Reduz autuações e passivos trabalhistas ao eliminar exigências genéricas que não cobrem o risco real de cada função/atividade."},{"pratica":"Unificar as frentes trabalhista, SSMA e equipamentos em uma base única, integrada ao ERP, RH e catraca — eliminando planilhas e silos.","modulos":["AFM Gestão (plataforma única)","Integração via API","Módulo de Equipamentos"],"beneficio":"Menos retrabalho manual e visão única do terceiro, com dados sempre atualizados entre RH, ERP e catraca."},{"pratica":"Estender o controle à 4ª camada (subcontratadas) e reaproveitar documentos válidos por CPF/CNPJ para reduzir retrabalho de mobilização.","modulos":["Matriz Documental — subcontratadas","Reaproveitamento por CPF/CNPJ"],"beneficio":"Fecha o principal ponto cego de responsabilidade subsidiária e acelera a mobilização de terceiros já validados."}],"D2":[{"pratica":"Automatizar a triagem documental e deixar o time humano só para as exceções — ganho direto de produtividade e prazo.","modulos":["SpeeDoc (IA)"],"beneficio":"Libera o time para tratar só as exceções, reduzindo prazo de liberação e custo operacional da triagem."},{"pratica":"Adotar verificação de integridade/antifraude nos documentos para proteção contra responsabilidade subsidiária (Súmula 331).","modulos":["Smart Check (IA)"],"beneficio":"Reduz exposição a fraude documental e fortalece a defesa em ações de responsabilidade subsidiária."},{"pratica":"Conectar a liberação de acesso ao status documental em tempo real, na portaria e no campo, e vincular treinamentos obrigatórios à liberação.","modulos":["Crachá + QR Code","App Fiscalização","Módulo de Treinamentos","Acesso Lógico"],"beneficio":"Impede que terceiro irregular ou sem treinamento entre em operação, reduzindo risco de acidente e autuação."},{"pratica":"Integrar a homologação de fornecedores à entrada em operação, garantindo que só passe a operar quem foi validado.","modulos":["Homologação + checklist"],"beneficio":"Garante que só opera quem já foi avaliado, reduzindo risco de qualidade e compliance na entrada."}],"D3":[{"pratica":"Estruturar o dado da operação para indicadores em tempo real, substituindo relatórios manuais e planilhas de consolidação.","modulos":["Dashboard & BI"],"beneficio":"Corta o tempo gasto consolidando planilhas e dá visibilidade em tempo real para a tomada de decisão."},{"pratica":"Formalizar o handover Compras→Gestão (escopo, SLAs, premissas) e medir continuamente contratado × realizado.","modulos":["Handover de contrato","Checklist de Performance"],"beneficio":"Reduz divergência entre contratado e entregue, evitando retrabalho, glosas e disputas contratuais."},{"pratica":"Transformar o dado de compliance em inteligência de custo e risco contratual (cláusulas, risco de quebra, custo real) e cruzar com Compras e Contratos.","modulos":["Inteligência de Contrato","Ecossistema integrado (Cotação + Gestão + Performance)"],"beneficio":"Abre espaço para saving e renegociação com base em dados, não em percepção."}],"D4":[{"pratica":"Definir critérios objetivos de quais contratos entram na gestão (cessão de mão de obra, recorrência, criticidade) para não deixar contrato fora do radar.","modulos":["Inteligência de Contrato — escopo/risco"],"beneficio":"Elimina contratos \"fora do radar\" e reduz risco de passivo em relações não formalmente geridas."},{"pratica":"Estruturar papéis (corporativo, gestor/fiscal, ponta) e oferecer ao fornecedor uma jornada única de comunicação, documentos e pendências (portal), habilitando a ponta com acesso e ferramenta de campo.","modulos":["Portal do Fornecedor","App Fiscalização"],"beneficio":"Menos ruído de comunicação com o fornecedor e responsabilidade clara em cada etapa do processo."},{"pratica":"Aplicar política de consequências com régua automática de alertas, escalonamento e bloqueio conforme pendências.","modulos":["Régua de Notificação","Regras de bloqueio (enforcement)"],"beneficio":"Cria disciplina de correção automática, reduzindo reincidência de pendências sem depender de cobrança manual."},{"pratica":"Levar indicadores de terceiros ao nível executivo/C-level com cadência definida, posicionando o tema como estratégico.","modulos":["Dashboard & BI"],"beneficio":"Eleva o tema a decisão estratégica, facilitando patrocínio e orçamento para evoluir a maturidade."}]},"perguntas":[{"dim":"D1","dimNome":"Fundamentos","num":"1.1","peso":3,"cliente":"A empresa mantém controle formal da documentação trabalhista dos prestadores de serviço?","modulo":"AFM Gestão — Compliance Trabalhista","gancho":"Porta de entrada. Sem isso o cliente carrega risco de responsabilidade subsidiária (Súmula 331 TST).","opcoes":[["Não",0.0],["Sim",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.2","peso":3,"cliente":"A empresa mantém controle formal de segurança do trabalho (treinamentos, NRs, ASOs) dos prestadores?","modulo":"AFM Gestão — Módulo de SSMA","gancho":"Risco de acidente = risco criminal e reputacional. Um dos dois pilares inegociáveis.","opcoes":[["Não",0.0],["Sim",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.3","peso":2,"cliente":"A empresa mantém controle formal dos equipamentos utilizados pelos prestadores?","modulo":"AFM Gestão — Módulo de Equipamentos","gancho":"Gerir CNPJ de equipamentos e docs técnicos já é um grau acima de maturidade — mobiliza checklists de manutenção.","opcoes":[["Não",0.0],["Sim",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.4","peso":3,"cliente":"Quantos sistemas diferentes vocês usam para controlar essas frentes (trabalhista, segurança do trabalho, equipamento)?","modulo":"AFM Gestão — plataforma única + Integração via API (ERP, RH, catraca)","gancho":"Dor clara de fragmentação. Cada sistema a menos é uma proposta de unificação e fim de silos.","opcoes":[["Nenhum sistema estruturado — controle informal ou manual",0.0],["3 sistemas ou mais — cada frente em uma plataforma separada",0.33],["2 sistemas — parte das frentes já consolidada ou uma das frentes não contempla controle sistêmico",0.67],["1 sistema único — todas as frentes integradas",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.5","peso":2,"cliente":"A exigência documental muda conforme o tipo de contratação e de vínculo (CLT, PJ, MEI, estrangeiro etc.)?","modulo":"Matriz Documental Inteligente (por tipo de contratação e vínculo)","gancho":"Diferenciação por vínculo evita exigir documento errado (ou de menos).","opcoes":[["Não diferencia por tipo de contratação ou vínculo",0.0],["Diferencia parcialmente — só para alguns tipos",0.5],["Diferencia por completo — todos os tipos e vínculos",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.6","peso":2,"cliente":"A empresa tem visibilidade e faz a gestão da documentação dos subcontratados (4ª camada)?","modulo":"Matriz Documental Inteligente — controle de subcontratadas","gancho":"A 4ª camada é o ponto cego clássico e um risco alto pouco endereçado no mercado.","opcoes":[["Não aplicável",null],["Não tem visibilidade nem gestão da documentação dos subcontratados",0.0],["Tem visibilidade e gestão formal da documentação dos subcontratados",1.0]]},{"dim":"D1","dimNome":"Fundamentos","num":"1.7","peso":4,"cliente":"A empresa consegue definir e automatizar as exigências documentais de acordo com a função e a atividade exercida pelo terceiro?","modulo":"Matriz Documental Inteligente — por função e por atividade crítica","gancho":"Parametrização por função e por atividade crítica → cobrança automática. Vende automação fina e reduz retrabalho.","opcoes":[["Não diferencia por função nem por atividade — os documentos exigidos são os mesmos para todos",0.0],["Diferencia por função ou por atividade, mas de forma manual",0.33],["Diferencia e automatiza por função, mas não por atividade crítica",0.67],["Diferencia e automatiza tanto por função quanto por atividade crítica",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.1","peso":3,"cliente":"Qual o nível de automação na validação dos documentos dos colaboradores dos prestadores (identificação de inconsistências, retorno ao fornecedor e direcionamento para validação manual)?","modulo":"SpeeDoc (IA) — validação automática de documentos","gancho":"Maior alavanca de produtividade do CS: automação da validação documental libera o time para tratar exceções, não tarefas repetitivas.","opcoes":[["Manual — validação feita integralmente por pessoas, com retorno ao fornecedor em caso de inconsistências",0.0],["Semiautomatizado — automações pontuais de apoio, mas validação e retorno ainda dependem de análise manual",0.5],["Digital e sistematizado — maior parte validada automaticamente por IA, com retorno estruturado ao fornecedor",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.2","peso":2,"cliente":"Existe verificação automatizada (IA ou outra tecnologia) para identificar fraude ou inconsistência nos documentos recebidos?","modulo":"Smart Check (IA) — integridade e antifraude documental","gancho":"Detecção de fraude com IA embutida no fluxo — argumento central de proteção contra Súmula 331 e passivo trabalhista.","opcoes":[["Não existe verificação automatizada para identificar fraude ou inconsistência nos documentos",0.0],["Verificação manual — a análise é feita apenas por pessoas, sem apoio de sistemas automatizados",0.5],["IA aplicada — além da automação, há uso de inteligência artificial para identificar possíveis fraudes ou inconsistências",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.3","peso":2,"cliente":"A empresa disponibiliza meio de identificação do terceiro que permita consultar, em tempo real, seu status e situação documental?","modulo":"Crachá + QR Code (acesso físico e lógico)","gancho":"Conecta portaria/acesso ao status documental. Visível e 'palpável' para o cliente.","opcoes":[["Não possui identificação com consulta de status",0.0],["Identificação básica, sem consulta de status",0.5],["Crachá ou identificação com QR Code — consulta em tempo real",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.4","peso":2,"cliente":"Como a empresa realiza auditorias, inspeções ou verificações por amostragem em campo, garantindo o registro de evidências e a rastreabilidade mesmo em áreas sem conexão?","modulo":"APP Gestão (auditoria em campo, GPS offline)","gancho":"Auditoria por amostragem com evidência registrada sustenta a rastreabilidade das ocorrências — argumento central de compliance e defesa em fiscalização.","opcoes":[["Não aplicável",null],["É necessário, mas a empresa não realiza auditorias ou inspeções em campo",0.0],["Realiza manualmente, sem registro digital estruturado",0.33],["Realiza de forma digital, integrado a um sistema de gestão, porém sem registro e rastreabilidade da checagem em campo",0.67],["Realiza de forma digital e integrada, com rastreabilidade completa das ocorrências",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.5","peso":2,"cliente":"Como a empresa controla os treinamentos internos ministrados aos colaboradores dos prestadores?","modulo":"Módulo de Treinamentos","gancho":"Treinamento (integração/NRs) vinculado à liberação fecha o ciclo de acesso seguro.","opcoes":[["Sem controle estruturado da participação",0.0],["Controle manual — listas de presença ou planilhas",0.33],["Digital, mas isolado do sistema de gestão",0.67],["Digital e integrado ao status de liberação do colaborador",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.6","peso":2,"cliente":"Como ocorre a integração entre a Homologação de Fornecedores e a Gestão de Terceiros?","modulo":"Homologação de Fornecedores","gancho":"Conectar homologação à operação evita fornecedor não homologado em campo.","opcoes":[["Processos independentes — homologação e Gestão de Terceiros funcionam separadamente, sem validar se os cadastrados estão homologados",0.0],["Verificação manual entre as áreas — existe verificação, mas depende de comunicação manual entre as áreas responsáveis",0.25],["Integração parcial — existem consultas para verificar a homologação, mas o processo não é total, podendo haver fornecedores atuando sem validação",0.5],["Processos integrados — cadastro de fornecedores e subcontratados conectado à homologação, permitindo verificar sua situação antes da mobilização",0.75],["Integração com bloqueio automático — homologação e Gestão de Terceiros integradas ponta a ponta, bloqueando quem não está homologado",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.7","peso":1,"cliente":"Como a empresa controla os acessos lógicos de colaboradores terceiros a sistemas e informações corporativas?","modulo":"Módulo de Acesso Lógico","gancho":"Segurança da informação + LGPD. Acesso não revogado é risco cibernético.","opcoes":[["Sem controle estruturado — não existe processo para controlar os acessos lógicos dos terceiros, com responsabilidade descentralizada entre áreas",0.0],["Controle descentralizado — existem sistemas para concessão e revogação de acessos, mas de forma independente da Gestão de Terceiros",0.33],["Integração parcial, atualização manual — acessos controlados por sistemas específicos, mas a atualização depende de comunicação manual sobre mudanças",0.67],["Integrado à Gestão de Terceiros — o ciclo de vida do terceiro orienta concessão, alteração e revogação de acessos conforme status e contrato",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.8","peso":1,"cliente":"A empresa possui controle formal e monitorado sobre alojamento/moradia dos prestadores (quando aplicável)?","modulo":"Módulo de Alojamento (checklist fotográfico + auditoria)","gancho":"Risco de trabalho análogo à escravidão. Nicho de alto valor em setores específicos.","opcoes":[["Não aplicável",null],["Não possui controle formal sobre alojamento/moradia",0.0],["Possui controle manual, sem monitoramento sistematizado",0.5],["Possui controle formal e monitoramento sistematizado",1.0]]},{"dim":"D2","dimNome":"Capacidades intermediárias","num":"2.9","peso":1,"cliente":"A empresa monitora indicadores da dimensão Social (S) do ESG dos colaboradores dos seus prestadores?","modulo":"Módulo ESG (diversidade e equidade)","gancho":"Abre porta com áreas de sustentabilidade/compliance. Acompanha diversidade e discrepâncias salariais.","opcoes":[["Não monitora — não possui controle estruturado sobre indicadores sociais relacionados aos colaboradores dos prestadores",0.0],["Informações cadastrais básicas — possui dados básicos dos colaboradores, mas sem análises estruturadas de indicadores sociais ou diversidade",0.25],["Monitora diversidade — acompanha representatividade de mulheres, raça/cor, faixa etária e outros dados de diversidade dos colaboradores",0.5],["Monitora diversidade e equidade — além da representatividade, analisa diferenças de remuneração, distribuição por cargo e oportunidades de desenvolvimento",0.75],["Gestão ativa — monitora os indicadores de forma recorrente, estabelece metas, identifica desigualdades e usa os dados para agir junto aos prestadores",1.0]]},{"dim":"D3","dimNome":"Integração e dados","num":"3.1","peso":3,"cliente":"A empresa possui dados estruturados e atualizados que permitam monitorar a força de trabalho terceirizada e os principais indicadores da operação?","modulo":"Dashboard & BI (indicadores em tempo real) · AFM Performance","gancho":"Dado estruturado é pré-requisito para tudo em Integração. Time de BI dedicado como diferencial.","opcoes":[["Sem visibilidade consolidada — não possui visão consolidada da quantidade de terceiros em operação nem dos principais indicadores operacionais",0.0],["Visão limitada e descentralizada — informações sobre colaboradores existem, mas de forma descentralizada, difíceis de consolidar por unidade ou contrato",0.33],["Visão operacional, consolidação manual — acompanha terceiros por contrato e unidade, mas com consolidação manual e indicadores limitados",0.67],["Gestão por indicadores e dashboards — dados estruturados acompanham a força de trabalho por contrato e unidade, com indicadores como HHT",1.0]]},{"dim":"D3","dimNome":"Integração e dados","num":"3.2","peso":2,"cliente":"No início da gestão, as informações do contrato (escopo, quantidade de profissionais, modelo de contratação, premissas, SLAs, indicadores) são transferidas de forma estruturada para a área de gestão de terceiros?","modulo":"Cruzamento contratado x entregue (AFM Performance) · Checklist · Handover de contratos (contratado × realizado) — roadmap 2026","gancho":"Handover estruturado é a costura Compras↔Gestão. Registra medições contratado × realizado.","opcoes":[["Sem processo estruturado — não existe handover formal; a Gestão de Terceiros recebe informações conforme necessidade das áreas envolvidas",0.0],["Handover informal — existe troca de informações entre Compras e Gestão de Terceiros, mas manual e não padronizada, com risco de perda de dados",0.33],["Handover estruturado, mas parcial — processo definido compartilha as principais informações, mas nem todas as premissas e SLAs estão integrados",0.67],["Handover completo — comercial e operacional — a gestão começa com transferência estruturada de escopo, volumes, SLAs e indicadores",1.0]]},{"dim":"D3","dimNome":"Integração e dados","num":"3.3","peso":2,"cliente":"A empresa usa os dados extraídos dos documentos dos prestadores para gerar indicadores, apoiar auditorias e identificar riscos e oportunidades na operação?","modulo":"Cruzamento Gestão → Cotação (AFM Cotação) · Cost breakdown e should cost reverso · Inteligência de contrato · Ecossistema integrado Atlas (Cotação+Gestão+Performance)","gancho":"Transforma dado de compliance em inteligência de custo e risco. Ponte para decisões de Compras.","opcoes":[["Dados isolados — os dados dos documentos dos prestadores não geram indicadores nem apoiam auditorias; ficam restritos ao arquivo documental",0.0],["Análises pontuais, geralmente em planilhas — os dados são eventualmente extraídos e analisados de forma manual, sem rotina estabelecida",0.33],["Indicadores básicos, ainda com limitações — indicadores gerados a partir dos dados documentais, mas com limitações para apoiar auditorias e riscos",0.67],["Inteligência integrada e contínua — os dados documentais alimentam indicadores contínuos, apoiando auditorias, antecipando riscos e gerando economia",1.0]]},{"dim":"D3","dimNome":"Integração e dados","num":"3.4","peso":3,"cliente":"A empresa consegue cruzar dados da gestão de terceiros com Compras e Contratos para gerar insights sobre desempenho, custos, aderência ao contratado e oportunidades de otimização?","modulo":"Inteligência de Contrato + ecossistema integrado (Cotação + Gestão + Performance)","gancho":"O 'santo graal': cruzamento total. Argumento máximo do ecossistema integrado.","opcoes":[["Dados isolados — Gestão de Terceiros, Compras e Contratos trabalham com informações independentes, sem cruzamento estruturado",0.0],["Cruzamentos pontuais, geralmente manuais — os dados são cruzados eventualmente, normalmente por meio de planilhas ou análises manuais",0.25],["Integração parcial entre as áreas — existem alguns cruzamentos entre contratos, fornecedores e operação, mas com limitações de abrangência",0.5],["Dados integrados — contratado × mobilizado × realizado — as três áreas integradas permitem analisar custos, volumes e performance dos fornecedores",0.75],["Inteligência estratégica — orienta decisões de negócio — os dados geram insights contínuos, identificam desvios e oportunidades de saving em Compras",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.1","peso":2,"cliente":"Como a empresa identifica quais contratos devem ser submetidos ao processo de gestão e controle de terceiros?","modulo":"Handover de contratos","gancho":"Se não identifica o contrato, ele não entra na gestão. Risco de cobertura.","opcoes":[["Reativo — não existe processo estruturado; a inclusão depende da iniciativa das áreas responsáveis pelo contrato ou do cliente na ponta",0.0],["Parcial, comunicação manual — existe algum processo de identificação, mas depende de comunicação manual, podendo haver contratos não cadastrados",0.33],["Estruturado, critérios definidos — existem critérios para identificar os contratos a acompanhar (recorrência, tipo de serviço), mas com etapas manuais",0.67],["Integrado às áreas de contratação — a identificação é integrada aos processos de contratação, reduzindo o risco de contratos ficarem de fora",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.2","peso":4,"cliente":"Como está estruturada a governança da Gestão de Terceiros — considerando a definição de papéis e responsabilidades entre o corporativo e os contratos, e o conhecimento, acesso às informações e participação ativa dos gestores e fiscais dos contratos na execução do processo?","modulo":null,"gancho":"Conectar corporativo à ponta é onde o processo trava — e é isso que o fiscal com acesso resolve. Oportunidade de método + ferramenta, com governança real e não de papel.","opcoes":[["Não estruturada — não existem papéis e responsabilidades definidos; a atuação é descentralizada e reativa, e a ponta participa pouco ou nada",0.0],["Estrutura formal, pouco conectada à ponta — há responsáveis no corporativo, mas gestores e fiscais na ponta têm pouco acesso e só agem se há problema",0.25],["Estrutura definida, fluxo ainda manual — papéis estão definidos e a ponta já participa, mas a comunicação ainda depende de processos manuais",0.5],["Governança conectada — responsabilidades entre corporativo e operação estão definidas, com comunicação e escalonamento ligando gestão e execução",0.75],["Governança integrada e retroalimentada — a ponta participa de todo o ciclo, da mobilização ao encerramento, e a operação realimenta a gestão corporativa",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.3","peso":2,"cliente":"A empresa oferece aos fornecedores uma jornada unificada para gestão de contratos e obrigações (documentos, pendências, solicitações e comunicações em um único ambiente)?","modulo":"Portal do Fornecedor","gancho":"Reclassificada em Governança: o portal é o ponto único de orquestração da jornada do fornecedor — comunicação, papéis e responsabilidades circulam por ali.","opcoes":[["Descentralizado, vários canais — o fornecedor interage com diferentes áreas e canais, sem um ambiente único para acompanhar obrigações e pendências",0.0],["Parcialmente centralizado — algumas informações estão centralizadas, mas o fornecedor ainda usa diferentes canais e sistemas para atender às demandas",0.33],["Portal informativo — existe um portal para informações e envio de documentos, mas a jornada ainda depende de outros canais paralelos",0.67],["Portal integrado, orquestrador da jornada — ambiente centralizado conecta documentos, contratos, treinamentos, pendências e comunicações",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.4","peso":2,"cliente":"A empresa possui e aplica política de consequências para fornecedores que não cumprem as obrigações de GRT e compliance trabalhista?","modulo":"Régua de Notificação + regras de bloqueio (enforcement)","gancho":"Alertas parametrizáveis e bloqueio automático (acesso/pagamento) são maturidade e diferencial.","opcoes":[["Não possui — não existe política ou mecanismo formal de consequências para o descumprimento das obrigações trabalhistas e documentais",0.0],["Possui, mas não aplica — existem regras contratuais sobre o cumprimento das obrigações, mas sua aplicação é pontual e pouco usada na prática",0.25],["Aplicação manual — existem consequências definidas e aplicáveis, mas o acompanhamento e o acionamento dependem de atuação manual das áreas",0.5],["Processo estruturado — as consequências estão formalmente vinculadas ao processo, com regras claras de cobrança, prazos e escalonamento",0.75],["Enforcement integrado e automático — a política está integrada aos sistemas e aciona automaticamente bloqueio, restrição ou suspensão",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.5","peso":5,"cliente":"Em que nível organizacional a Gestão de Terceiros é acompanhada, e como as informações geradas são utilizadas na tomada de decisão?","modulo":"Dashboard & BI (reporte estratégico e uso na decisão)","gancho":"Quanto mais alto o reporte, mais estratégico o tema — e dado que vira decisão é o topo da escada. Define patrocínio C-level e fecha o ciclo de valor.","opcoes":[["Operacional — o tema é tratado pelas equipes dos contratos, sem reporte estruturado à liderança nem uso das informações além do dia a dia",0.0],["Gerencial — acompanhada por gestores das áreas, com reportes pontuais conforme ocorrência de problemas, e uso eventual em decisões específicas",0.25],["Gestão estruturada — indicadores acompanhados regularmente, mas usados principalmente para controle e decisões pontuais",0.5],["Executivo — indicadores, riscos e resultados são reportados regularmente à liderança executiva, que os usa para acompanhar planos e priorizar riscos",0.75],["Estratégico / C-level — tema da alta liderança, com acompanhamento recorrente de indicadores, custos e performance, orientando decisões estratégicas",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.6","peso":1,"cliente":"Com que frequência a alta liderança recebe informações sobre a gestão e os riscos relacionados aos terceiros?","modulo":"Dashboard & BI (report executivo)","gancho":"Cadência de reporte à liderança. Dashboards automáticos vendem tempo e visibilidade.","opcoes":[["Não recebe reportes estruturados",0.0],["Apenas quando ocorre um problema relevante, ou eventualmente / sob demanda",0.33],["Trimestralmente",0.67],["Mensalmente",1.0]]},{"dim":"D4","dimNome":"Governança","num":"4.7","peso":1,"cliente":"Como a Gestão de Terceiros é percebida e posicionada atualmente dentro da organização?","modulo":"Ecossistema integrado Atlas (posicionamento estratégico)","gancho":"Mede a percepção do tema. Norteia a narrativa de transformação a vender.","opcoes":[["Operacional / burocrática — é percebida como atividade operacional e burocrática, voltada ao controle de documentos e cumprimento de obrigações",0.0],["Compliance — tem como principal objetivo garantir conformidade legal, trabalhista e documental, sendo acionada para tratar riscos e pendências",0.25],["Gestão e controle — é reconhecida como área importante de controle de riscos e acompanhamento de contratos, mas com pouca participação estratégica",0.5],["Gestão estratégica — é fonte de informações sobre fornecedores, contratos, pessoas, operação, riscos e performance, apoiando decisões de negócio",0.75],["Inteligência de negócio — é fonte estratégica de dados, integrando Pessoas, Operações, Compras, Contratos e Riscos para gerar insights e decisões",1.0]]}]};
+const state = {};
+const comments = {};
+const DIMS = MODEL.dimensoes, FAIXAS = MODEL.faixas, B = MODEL.bench, SOL = MODEL.solucoes;
+const meta = DIMS.map(d=>d.excel);
+const show = {mkt:true, exc:true, wc:false};
+function setComment(num, val){
+  if(val && val.trim()) comments[num] = val; else delete comments[num];
+}
+
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click', ()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.setAttribute('aria-selected', x===b));
+  document.querySelectorAll('.panel').forEach(p=>p.setAttribute('data-active', p.dataset.tab===b.dataset.tab));
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderAll();
+}));
+
+const qf = document.getElementById('qFilters');
+DIMS.forEach(d=>{
+  const n = MODEL.perguntas.filter(p=>p.dim===d.id).length;
+  const b = document.createElement('button');
+  b.className='q-filter'; b.dataset.dim=d.id; b.setAttribute('aria-pressed','false');
+  b.textContent = d.nome+' ('+n+')';
+  qf.appendChild(b);
+});
+qf.addEventListener('click', e=>{
+  const b = e.target.closest('.q-filter'); if(!b) return;
+  qf.querySelectorAll('.q-filter').forEach(x=>{x.setAttribute('aria-pressed','false'); x.style.background=''; x.style.color=''; x.style.borderColor='';});
+  b.setAttribute('aria-pressed','true');
+  const c = b.dataset.dim==='all' ? getComputedStyle(document.documentElement).getPropertyValue('--brand') : DIMS.find(d=>d.id===b.dataset.dim).cor;
+  b.style.background=c; b.style.color='#fff'; b.style.borderColor='transparent';
+  renderQ(b.dataset.dim);
+});
+
+function optRow(p, oi, txt, frac){
+  const sel = state[p.num] && state[p.num].oi===oi;
+  return `<label class="opt ${sel?'selected':''}" data-num="${p.num}" data-oi="${oi}">
+    <input type="radio" name="q-${p.num}" ${sel?'checked':''} onclick="selectOpt('${p.num}',${oi})">
+    <span>${txt}${frac===null?' <i>(N/A)</i>':' — '+Math.round(frac*100)+'%'}</span></label>`;
+}
+function qCard(p){
+  const dc = DIMS.find(d=>d.id===p.dim).cor;
+  const opts = p.opcoes.map((o,oi)=>optRow(p,oi,o[0],o[1])).join('');
+  const comment = comments[p.num] || '';
+  return `<div class="qcard" style="--dc:${dc}">
+    <div class="qcard-head"><span class="q-chip">${p.dimNome}</span><span class="q-num">${p.num}</span><span class="q-peso-badge">peso ${p.peso}</span></div>
+    <h3>${p.cliente}</h3>
+    <div class="q-opts">${opts}</div>
+    <textarea class="q-comment" placeholder="Comentário / observação adicional (opcional)" data-num="${p.num}" oninput="setComment('${p.num}', this.value)">${comment}</textarea>
+    <div class="q-internal"><b>Vínculo Atlas (uso interno):</b> ${p.modulo||'—'}</div>
+    ${p.gancho ? `<div class="q-gancho"><b>Gancho de conversa:</b> ${p.gancho}</div>` : ''}
+  </div>`;
+}
+function renderQ(dim){
+  dim = dim || 'all';
+  document.getElementById('qList').innerHTML = MODEL.perguntas.filter(p=>dim==='all'||p.dim===dim).map(qCard).join('');
+}
+function selectOpt(num, oi){
+  const p = MODEL.perguntas.find(x=>x.num===num);
+  const [txt, frac] = p.opcoes[oi];
+  state[num] = {label:txt, frac:frac, na:frac===null, oi:oi};
+  document.querySelectorAll(`.opt[data-num="${num}"]`).forEach(el=>el.classList.toggle('selected', +el.dataset.oi===oi));
+  document.getElementById('qProgress').textContent = Object.keys(state).length+' / '+MODEL.perguntas.length+' respondidas';
+  renderAll();
+}
+renderQ('all');
+
+function dimScore(dimId){
+  let sw=0, swc=0;
+  MODEL.perguntas.filter(p=>p.dim===dimId).forEach(p=>{
+    const a = state[p.num]; if(!a || a.na) return;
+    sw += p.peso; swc += a.frac*p.peso;
+  });
+  return sw>0 ? Math.round(swc/sw*100) : null;
+}
+function overallScore(cli){
+  let sw=0, swc=0;
+  DIMS.forEach((d,i)=>{ if(cli[i]!==null){ sw+=d.peso; swc+=cli[i]*d.peso; } });
+  return sw>0 ? Math.round(swc/sw) : 0;
+}
+function faixaFor(s){ let r=FAIXAS[0]; for(const f of FAIXAS) if(s>=f.min) r=f; return r; }
+function polar(cx,cy,r,a){ return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+
+function drawRadar(cli){
+  const svg = document.getElementById('radar');
+  const cx=250, cy=190, R=100, n=DIMS.length, ang=i=>(-Math.PI/2)+i*2*Math.PI/n;
+  let s='';
+  for(let g=1; g<=4; g++){ let pts=''; for(let i=0;i<n;i++){ const [x,y]=polar(cx,cy,R*g/4,ang(i)); pts+=`${x.toFixed(1)},${y.toFixed(1)} `; } s+=`<polygon points="${pts}" fill="none" stroke="var(--hair)" stroke-width="1"/>`; }
+  for(let i=0;i<n;i++){
+    const [x,y]=polar(cx,cy,R,ang(i));
+    s+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--hair)" stroke-width="1"/>`;
+    const [lx,ly]=polar(cx,cy,R+26,ang(i));
+    const an = Math.abs(lx-cx)<10 ? 'middle' : (lx>cx?'start':'end');
+    s+=`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${an}" dominant-baseline="middle" font-family="var(--f-mono)" font-size="10.5" fill="var(--muted)">${DIMS[i].nome.split(' ')[0]}</text>`;
+    s+=`<text x="${lx.toFixed(1)}" y="${(ly+12).toFixed(1)}" text-anchor="${an}" dominant-baseline="middle" font-family="var(--f-mono)" font-size="9" fill="var(--muted)" opacity=".7">${DIMS[i].peso}%</text>`;
+  }
+  function poly(vals, stroke, fill, dash, sw){
+    let pts=''; for(let i=0;i<n;i++){ const [x,y]=polar(cx,cy,R*Math.max(0,vals[i])/100,ang(i)); pts+=`${x.toFixed(1)},${y.toFixed(1)} `; }
+    return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash?`stroke-dasharray="${dash}"`:''} stroke-linejoin="round"/>`;
+  }
+  if(show.wc) s += poly(DIMS.map(d=>d.wc), '#8892A0', 'none', '2 3', 1.2);
+  if(show.exc) s += poly(DIMS.map(d=>d.excel), '#3E9E77', 'none', '5 4', 1.4);
+  if(show.mkt) s += poly(DIMS.map(d=>d.mkt), '#9AA7B0', 'none', '5 4', 1.4);
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const brand = getComputedStyle(document.documentElement).getPropertyValue('--brand').trim();
+  s += poly(meta, accent, 'none', '', 2);
+  const cliFilled = cli.map(v=>v===null?0:v);
+  s += poly(cliFilled, brand, brand+'33', '', 2.5);
+  for(let i=0;i<n;i++){ const [x,y]=polar(cx,cy,R*Math.max(0,cliFilled[i])/100,ang(i)); s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${brand}"/>`; }
+  svg.innerHTML = s;
+}
+
+['showMkt','showExc','showWc'].forEach((id,i)=>{
+  document.getElementById(id).addEventListener('change', e=>{
+    show[['mkt','exc','wc'][i]] = e.target.checked; renderDash();
+  });
+});
+
+function renderDash(){
+  const cli = DIMS.map(d=>dimScore(d.id));
+  drawRadar(cli);
+  const sc = overallScore(cli), f = faixaFor(sc);
+  document.getElementById('scoreBig').innerHTML = sc+'<span>/100</span>';
+  const badge = document.getElementById('faixaBadge');
+  badge.textContent = f.nome+' · '+f.sub; badge.style.background = f.cor;
+  document.getElementById('faixaDesc').textContent = f.desc;
+  const diff = sc - B.mercado_geral;
+  document.getElementById('benchNote').textContent = (diff>=0?'▲ '+diff+' pontos acima':'▼ '+(-diff)+' pontos abaixo')+' da média de mercado ('+B.mercado_geral+') · excelência '+B.excelencia_geral+' · world class '+B.world_class_geral+'. '+B.nota;
+  const tb = document.querySelector('#planTbl tbody');
+  tb.innerHTML = DIMS.map((d,i)=>{
+    const c = cli[i]===null?'—':cli[i];
+    const gap = cli[i]===null ? '—' : (meta[i]-cli[i]);
+    const gapCls = gap==='—'?'':(gap>0?'gap-neg':'gap-pos');
+    const gapTxt = gap==='—'?'—':(gap>0?'+'+gap:gap);
+    return `<tr class="dim-row" data-i="${i}"><td class="expand-toggle">▸</td><td><span class="mt-dot" style="background:${d.cor}"></span>${d.nome}</td><td>${c}</td><td>${d.mkt}</td><td>${d.excel}</td><td>${d.wc}</td>
+      <td><input class="meta-cell" type="number" min="0" max="100" value="${meta[i]}" data-i="${i}"></td><td class="${gapCls}">${gapTxt}</td></tr>
+      <tr class="calc-row" data-i="${i}"><td colspan="8">${calcTableFor(d)}</td></tr>`;
+  }).join('');
+  document.querySelectorAll('#planTbl .meta-cell').forEach(el=>{
+    el.addEventListener('click', e=>e.stopPropagation());
+    el.addEventListener('input', e=>{
+      const i=+e.target.dataset.i, v=Math.max(0,Math.min(100,+e.target.value||0));
+      meta[i]=v; renderAll();
+    });
+  });
+  tb.querySelectorAll('.dim-row').forEach(row=>{
+    row.addEventListener('click', e=>{
+      if(e.target.tagName==='INPUT') return;
+      const i = row.dataset.i;
+      const calc = tb.querySelector(`.calc-row[data-i="${i}"]`);
+      const open = calc.classList.toggle('show');
+      row.querySelector('.expand-toggle').textContent = open ? '▾' : '▸';
+    });
+  });
+  renderFaixaTbl();
+}
+
+function calcTableFor(d){
+  let somaPeso=0, somaContrib=0;
+  const rows = MODEL.perguntas.filter(p=>p.dim===d.id).map(p=>{
+    const a = state[p.num];
+    const answered = a && !a.na;
+    const fracTxt = !a ? '—' : (a.na ? 'N/A' : Math.round(a.frac*100)+'%');
+    const pesoEf = answered ? p.peso : 0;
+    const contrib = answered ? a.frac*p.peso : 0;
+    if(answered){ somaPeso += pesoEf; somaContrib += contrib; }
+    return `<tr><td class="qw-num">${p.num}</td><td>${p.cliente}</td><td>${a?a.label:'—'}</td><td>${fracTxt}</td><td>${p.peso}</td><td>${pesoEf}</td><td>${contrib.toFixed(2)}</td></tr>`;
+  }).join('');
+  const score = somaPeso>0 ? (somaContrib/somaPeso*100) : null;
+  return `<table class="calc-table">
+    <thead><tr><th>Nº</th><th>Pergunta</th><th>Resposta</th><th>Fração</th><th>Peso</th><th>Peso efetivo</th><th>Contribuição</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td colspan="4"></td><td>${somaPeso}</td><td></td><td>${somaContrib.toFixed(2)}</td></tr></tfoot>
+  </table>
+  <p style="font-size:11px;color:var(--muted);margin:6px 0 0">Score da dimensão = soma da Contribuição ÷ soma do Peso efetivo × 100 = ${score===null?'—':Math.round(score)}. Perguntas não respondidas ou "não aplicável" ficam de fora dos dois lados da conta.</p>`;
+}
+
+function renderFaixaTbl(){
+  const tb = document.querySelector('#faixaTbl tbody');
+  if(!tb) return;
+  tb.innerHTML = FAIXAS.map(f=>{
+    const range = (f.max!==undefined && f.max!==null) ? f.min+'–'+f.max : f.min+'+';
+    return `<tr><td><span class="mt-dot" style="background:${f.cor}"></span>${f.nome}</td><td>${range}</td><td>${f.sub}</td><td style="text-align:left">${f.desc}</td></tr>`;
+  }).join('');
+}
+
+function renderEvo(){
+  const cli = DIMS.map(d=>dimScore(d.id));
+  const list = document.getElementById('evoList');
+  list.innerHTML = DIMS.map((d,i)=>{
+    const c = cli[i]===null?0:cli[i];
+    const gapMeta = meta[i]-c, gapExc = d.excel-c;
+    return `<div class="evo-item" style="--dc:${d.cor}">
+      <div class="eh"><b style="color:${d.cor}">${d.nome}</b><span class="progress-label">${cli[i]===null?'sem respostas':c+'/100'} · meta ${meta[i]} · excelência ${d.excel}</span></div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:2px">${d.resumo}</p>
+      <div class="evo-bar-shell"><div class="evo-bar" style="width:${c}%;background:${d.cor}"></div><div class="evo-meta-mark" style="left:${meta[i]}%"></div></div>
+      <p style="font-size:12.5px;margin:6px 0 0">${cli[i]===null?'Ainda sem respostas nesta dimensão.':(gapMeta>0?('Faltam <b>'+gapMeta+' pontos</b> para a meta acordada; '+(gapExc>0?gapExc+' para a excelência de mercado.':'já supera a excelência de mercado.')):'Meta acordada já atingida ou superada.')}</p>
+    </div>`;
+  }).join('');
+}
+
+function renderSol(){
+  const cli = DIMS.map(d=>dimScore(d.id));
+  const answered = Object.keys(state).length;
+  const box = document.getElementById('solList');
+  if(answered===0){ box.innerHTML = '<div class="empty-note">Responda o questionário na aba "Questionário" para gerar o plano de ação com base nos gaps identificados.</div>'; return; }
+  const order = DIMS.map((d,i)=>({d,i,score:cli[i]})).filter(x=>x.score!==null).sort((a,b)=>a.score-b.score);
+  box.innerHTML = order.map(({d,i,score})=>{
+    const gaps = MODEL.perguntas.filter(p=>p.dim===d.id)
+      .map(p=>({p, a:state[p.num]}))
+      .filter(x=>x.a && !x.a.na && x.a.frac<0.75)
+      .sort((a,b)=>a.a.frac-b.a.frac).slice(0,4);
+    const gapsHtml = gaps.length ? `<ul class="gap-list">${gaps.map(g=>`<li><span class="gl-num">${g.p.num}</span>${g.p.cliente} <span class="gl-ans">— resposta: “${g.a.label}”</span></li>`).join('')}</ul>` : '<p style="font-size:12.5px;color:var(--muted)">Sem gaps relevantes identificados nesta dimensão.</p>';
+    const sol = (SOL[d.id]||[]).map(s=>`<div class="sol-item"><p>${s.pratica}</p><div class="sol-chips">${s.modulos.map(m=>`<span class="mod-chip">${m}</span>`).join('')}</div>${s.beneficio?`<p class="sol-benefit"><b>Benefício para o cliente:</b> ${s.beneficio}</p>`:''}</div>`).join('');
+    return `<div class="sol-dim">
+      <div class="sol-dim-head"><span class="mt-dot" style="background:${d.cor}"></span><h3 style="font-size:16px;color:${d.cor}">${d.nome}</h3><span class="sdscore">score ${score}/100 · meta ${meta[i]}</span></div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:6px">Principais gaps identificados nas respostas do cliente:</p>
+      ${gapsHtml}
+      <p style="font-size:12.5px;color:var(--muted);margin:10px 0 6px">Plano de ação recomendado:</p>
+      ${sol}
+    </div>`;
+  }).join('');
+}
+
+function renderQwGroups(){
+  const box = document.getElementById('qwGroups');
+  if(!box) return;
+  box.innerHTML = DIMS.map(d=>{
+    const qs = MODEL.perguntas.filter(p=>p.dim===d.id);
+    const totalPeso = qs.reduce((s,p)=>s+p.peso,0);
+    const rows = qs.map(p=>`<tr><td class="qw-num">${p.num}</td><td>${p.cliente}</td><td class="qw-peso">${p.peso}</td></tr>`).join('');
+    return `<details class="qwgroup" style="--dc:${d.cor}"><summary><span class="qwg-dot"></span>${d.nome} <span class="qwg-meta">${qs.length} perguntas · peso total ${totalPeso}</span></summary>
+      <table class="qwtable"><thead><tr><th>Nº</th><th>Pergunta</th><th>Peso</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+  }).join('');
+}
+renderQwGroups();
+
+function csvEscape(v){
+  v = (v===undefined||v===null) ? '' : String(v);
+  if(/[",\n;]/.test(v)) return '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+function exportCsv(){
+  const cli = DIMS.map(d=>dimScore(d.id));
+  const sc = overallScore(cli), f = faixaFor(sc);
+  const rows = [['Empresa','Responsável','Dimensão','Nº','Pergunta','Resposta','Fração','Peso','Vínculo Atlas','Gancho de conversa','Comentário']];
+  MODEL.perguntas.forEach(p=>{
+    const a = state[p.num];
+    rows.push([window.EMPRESA||'', window.RESPONSAVEL||'', p.dimNome, p.num, p.cliente,
+      a?a.label:'', a?(a.na?'N/A':Math.round(a.frac*100)+'%'):'', p.peso, p.modulo||'', p.gancho||'', comments[p.num]||'']);
+  });
+  rows.push([]);
+  rows.push(['Score final', sc, 'Faixa', f.nome+' - '+f.sub]);
+  DIMS.forEach((d,i)=> rows.push(['Score '+d.nome, cli[i]===null?'':cli[i], 'Meta', meta[i]]));
+  const csv = rows.map(r=>r.map(csvEscape).join(';')).join('\r\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'Guide360_interno_'+(window.EMPRESA||'cliente').replace(/[^a-zA-Z0-9]+/g,'_')+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function renderAll(){ renderDash(); renderEvo(); renderSol(); }
+renderAll();
+
+document.getElementById('inpEmpresa').addEventListener('input', e=>{ window.EMPRESA = e.target.value; });
+document.getElementById('inpResp').addEventListener('input', e=>{ window.RESPONSAVEL = e.target.value; });
+</script>
+</body>
+</html>
